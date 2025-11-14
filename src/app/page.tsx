@@ -1,9 +1,31 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Navbar from "../components/Navbar";
 import { FaFacebookF, FaInstagram, FaYoutube, FaXTwitter } from "react-icons/fa6";
 
 export default function Home() {
+  /* Sonido del video */
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    const enableSound = () => {
+      if (videoRef.current) {
+        videoRef.current.muted = false;
+        videoRef.current.volume = 1;
+
+        videoRef.current
+          .play()
+          .catch(() => {});
+      }
+
+      document.removeEventListener("click", enableSound);
+    };
+
+    document.addEventListener("click", enableSound);
+
+    return () => document.removeEventListener("click", enableSound);
+  }, []);
+
   /* Datos del carrusel */
   const items = [
     { titleSmall: "Vehículos eléctricos", titleBig: "El futuro eléctrico de Chevrolet.", img: "/carro1.jpg" },
@@ -97,13 +119,14 @@ export default function Home() {
       <Navbar />
       <main className="relative pt-[var(--navbar-height)]">
 
-        {/* Introducción del video*/}
+        {/* Introducción del video */}
         <section className="w-full h-[calc(100vh-var(--navbar-height))] relative">
           <video
+            ref={videoRef} 
             className="w-full h-full object-cover"
             autoPlay
             loop
-            muted
+            muted     
             preload="auto"
             poster="/video-poster.jpg"
             playsInline
@@ -127,7 +150,6 @@ export default function Home() {
         </section>
 
         {/* Carrusel */}
-        
         <section className="w-full bg-black flex flex-col items-center justify-center py-3">
           <h2 className="text-3xl font-bold mb-12 text-white">Conoce más</h2>
 
@@ -151,7 +173,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* puntos */}
           <div className="flex gap-3 mt-5">
             {Array.from({ length: totalViews }).map((_, i) => (
               <div
@@ -174,6 +195,7 @@ export default function Home() {
 
             <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
               <div className="grid grid-cols-4 gap-0 items-stretch">
+
                 {/* Labels */}
                 <div className="px-6 py-6 border-r border-gray-100 bg-white">
                   <div className="h-full flex flex-col gap-4">
@@ -234,7 +256,6 @@ export default function Home() {
                   </div>
                 ))}
 
-                {/* Resumen */}
                 <div className="grid grid-cols-4 items-center px-6 py-6 bg-gray-50">
                   <div className="text-sm font-medium text-gray-700">Resumen</div>
 
@@ -319,7 +340,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Idioma*/}
+            {/* Idioma */}
             <div>
               <h4 className="text-black font-semibold mb-4">Descargando la app</h4>
               <p className="text-gray-500 text-sm">
