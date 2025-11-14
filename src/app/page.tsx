@@ -6,25 +6,17 @@ import { FaFacebookF, FaInstagram, FaYoutube, FaXTwitter } from "react-icons/fa6
 export default function Home() {
   /* Sonido del video */
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [showSoundButton, setShowSoundButton] = useState(true);
 
-  useEffect(() => {
-    const enableSound = () => {
-      if (videoRef.current) {
-        videoRef.current.muted = false;
-        videoRef.current.volume = 1;
+  const enableSound = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = false;
+      videoRef.current.volume = 1;
 
-        videoRef.current
-          .play()
-          .catch(() => {});
-      }
-
-      document.removeEventListener("click", enableSound);
-    };
-
-    document.addEventListener("click", enableSound);
-
-    return () => document.removeEventListener("click", enableSound);
-  }, []);
+      videoRef.current.play().catch(() => {});
+    }
+    setShowSoundButton(false);
+  };
 
   /* Datos del carrusel */
   const items = [
@@ -122,17 +114,49 @@ export default function Home() {
         {/* Introducción del video */}
         <section className="w-full h-[calc(100vh-var(--navbar-height))] relative">
           <video
-            ref={videoRef} 
+            ref={videoRef}
             className="w-full h-full object-cover"
             autoPlay
             loop
-            muted     
+            muted  
             preload="auto"
             poster="/video-poster.jpg"
             playsInline
           >
             <source src="/Video.mp4" type="video/mp4" />
           </video>
+
+          {/* Botón de sonido */}
+          {showSoundButton && (
+            <button
+              onClick={enableSound}
+              className="
+                absolute bottom-10 right-10
+                text-white
+                hover:scale-110
+                transition-all duration-300
+              "
+            >
+              {/* Ícono minimalista profesional */}
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 24 24"
+                width="25"
+                height="25"            
+                fill="white"
+              >
+                <path d="M16.5 12c0-1.77-.77-3.29-2-4.29v8.58c1.23-1 2-2.52 2-4.29z"/>
+                <path d="M19 12c0 2.21-.91 4.21-2.36 5.64l1.41 1.41C20.14 17.94 21 15.07 21 12s-.86-5.94-2.95-7.05l-1.41 1.41C18.09 7.79 19 9.79 19 12z"/>
+                <path d="M3 9v6h4l5 5V4L7 9H3z"/>
+                <line
+                  x1="2" y1="2" 
+                  x2="22" y2="22" 
+                  stroke="white" 
+                  strokeWidth="2"
+                />
+              </svg>
+            </button>
+          )}
         </section>
 
         {/* Contenedor con imagen Toyota */}
